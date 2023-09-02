@@ -303,12 +303,12 @@ namespace LlamaCppCli
 
                         using var response = (await httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationTokenSource.Token)).EnsureSuccessStatusCode();
 
-                        await using var stream = await response.Content.ReadAsStreamAsync(cancellationTokenSource.Token);
+                        await using var stream = await response.Content.ReadAsStreamAsync();
                         using var reader = new StreamReader(stream);
 
                         while (!reader.EndOfStream && !cancellationTokenSource.IsCancellationRequested)
                         {
-                            var data = await reader.ReadLineAsync(cancellationTokenSource.Token);
+                            var data = await reader.ReadLineAsync();
                             if (data == null)
                                 break;
 

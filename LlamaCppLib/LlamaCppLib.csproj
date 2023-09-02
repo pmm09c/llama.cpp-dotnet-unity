@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net7.0</TargetFramework>
+		<TargetFramework>netstandard2.1</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<BaseOutputPath>..</BaseOutputPath>
@@ -13,6 +13,11 @@
 		<DefineConstants Condition="$([MSBuild]::IsOSPlatform('Linux'))">LINUX</DefineConstants>
 		<DefineConstants Condition="$([MSBuild]::IsOSPlatform('OSX'))">MACOS</DefineConstants>
 	</PropertyGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="System.Buffers" Version="4.5.1" />
+	  <PackageReference Include="System.Text.Json" Version="7.0.3" />
+	</ItemGroup>
 
 	<Target Name="CMakePrepareForBuild" BeforeTargets="PrepareForBuild;Clean" Condition="'$(NativeLibraries)'!='OFF'">
 		<PropertyGroup Condition="'$(OS)' == 'Windows_NT'">
@@ -34,11 +39,11 @@
 			<CMakeCompilerFlags Condition="$([System.String]::new('$(OS)').StartsWith('Unix'))">-DCMAKE_CXX_FLAGS=-w -DCMAKE_C_FLAGS=-w</CMakeCompilerFlags>
 		</PropertyGroup>
 		<!-- https://github.com/ggerganov/llama.cpp/pull/1827#issuecomment-1588722643 -->
-		<Exec Command='$(CMakeBin) -DLLAMA_CUBLAS=ON -DLLAMA_CUDA_FORCE_DMMV=ON -DLLAMA_CUDA_DMMV_X=64 -DLLAMA_CUDA_MMV_Y=2 -DLLAMA_ALL_WARNINGS=OFF -DLLAMA_BUILD_TESTS=OFF -DBUILD_SHARED_LIBS=ON -S "$(CMakeProject)" -B "$(CMakeProject)" $(CMakeCompilerFlags)' />
+		<Exec Command="$(CMakeBin) -DLLAMA_CUBLAS=ON -DLLAMA_CUDA_FORCE_DMMV=ON -DLLAMA_CUDA_DMMV_X=64 -DLLAMA_CUDA_MMV_Y=2 -DLLAMA_ALL_WARNINGS=OFF -DLLAMA_BUILD_TESTS=OFF -DBUILD_SHARED_LIBS=ON -S &quot;$(CMakeProject)&quot; -B &quot;$(CMakeProject)&quot; $(CMakeCompilerFlags)" />
 	</Target>
 
 	<Target Name="CMakeBuild" AfterTargets="CMakeConfigure" Condition="'$(NativeLibraries)'!='OFF'">
-		<Exec Command='$(CMakeBin) --build "$(CMakeProject)" -j8 --config $(Configuration)' />
+		<Exec Command="$(CMakeBin) --build &quot;$(CMakeProject)&quot; -j8 --config $(Configuration)" />
 	</Target>
 
 	<Target Name="CMakeCopyOutput" AfterTargets="CMakeBuild" Condition="'$(NativeLibraries)'!='OFF'">
