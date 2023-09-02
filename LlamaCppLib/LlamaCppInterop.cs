@@ -224,13 +224,13 @@ namespace LlamaCppLib
         [DllImport(LibName, EntryPoint = "llama_get_logits")] private static extern nint _llama_get_logits(llama_context ctx);
         public static unsafe Span<float> llama_get_logits(llama_context ctx)
         {
-            return new(_llama_get_logits(ctx).ToPointer(), llama_n_vocab(ctx));
+            return new((void*)_llama_get_logits(ctx), llama_n_vocab(ctx));
         }
 
         [DllImport(LibName, EntryPoint = "llama_get_embeddings")] private static extern nint _llama_get_embeddings(llama_context ctx);
         public static unsafe ReadOnlySpan<float> llama_get_embeddings(llama_context ctx)
         {
-            return new(_llama_get_embeddings(ctx).ToPointer(), llama_n_embd(ctx));
+            return new((void*)_llama_get_embeddings(ctx), llama_n_embd(ctx));
         }
 
         //
@@ -310,8 +310,9 @@ namespace LlamaCppLib
         public static unsafe void llama_sample_repetition_penalty(llama_context ctx, llama_token_data_array candidates, llama_token[] last_tokens, float penalty)
         {
             using var handle = candidates.data.Pin();
-            var _candidates = new _llama_token_data_array { data = new(handle.Pointer), size = candidates.size, sorted = candidates.sorted };
-            _llama_sample_repetition_penalty(ctx, new(&_candidates), last_tokens, last_tokens.Length, penalty);
+            var _candidates = new _llama_token_data_array { data = (nint)handle.Pointer, size = candidates.size, sorted = candidates.sorted };
+            
+            _llama_sample_repetition_penalty(ctx, (nint)(&_candidates), last_tokens, last_tokens.Length, penalty);
         }
 
         [DllImport(LibName, EntryPoint = "llama_sample_frequency_and_presence_penalties")]
@@ -319,8 +320,8 @@ namespace LlamaCppLib
         public static unsafe void llama_sample_frequency_and_presence_penalties(llama_context ctx, llama_token_data_array candidates, llama_token[] last_tokens, float alpha_frequency, float alpha_presence)
         {
             using var handle = candidates.data.Pin();
-            var _candidates = new _llama_token_data_array { data = new(handle.Pointer), size = candidates.size, sorted = candidates.sorted };
-            _llama_sample_frequency_and_presence_penalties(ctx, new(&_candidates), last_tokens, last_tokens.Length, alpha_frequency, alpha_presence);
+            var _candidates = new _llama_token_data_array { data = (nint)(handle.Pointer), size = candidates.size, sorted = candidates.sorted };
+            _llama_sample_frequency_and_presence_penalties(ctx, (nint)(&_candidates), last_tokens, last_tokens.Length, alpha_frequency, alpha_presence);
         }
 
         [DllImport(LibName, EntryPoint = "llama_sample_classifier_free_guidance")]
@@ -328,64 +329,64 @@ namespace LlamaCppLib
         public static unsafe void llama_sample_classifier_free_guidance(llama_context ctx, llama_token_data_array candidates, llama_context guidance_ctx, float scale)
         {
             using var handle = candidates.data.Pin();
-            var _candidates = new _llama_token_data_array { data = new(handle.Pointer), size = candidates.size, sorted = candidates.sorted };
-            _llama_sample_classifier_free_guidance(ctx, new(&_candidates), guidance_ctx, scale);
+            var _candidates = new _llama_token_data_array { data = (nint)(handle.Pointer), size = candidates.size, sorted = candidates.sorted };
+            _llama_sample_classifier_free_guidance(ctx, (nint)(&_candidates), guidance_ctx, scale);
         }
 
         [DllImport(LibName, EntryPoint = "llama_sample_softmax")] private static extern void _llama_sample_softmax(llama_context ctx, nint candidates);
         public static unsafe void llama_sample_softmax(llama_context ctx, llama_token_data_array candidates)
         {
             using var handle = candidates.data.Pin();
-            var _candidates = new _llama_token_data_array { data = new(handle.Pointer), size = candidates.size, sorted = candidates.sorted };
-            _llama_sample_softmax(ctx, new(&_candidates));
+            var _candidates = new _llama_token_data_array { data = (nint)(handle.Pointer), size = candidates.size, sorted = candidates.sorted };
+            _llama_sample_softmax(ctx, (nint)(&_candidates));
         }
 
         [DllImport(LibName, EntryPoint = "llama_sample_top_k")] private static extern void _llama_sample_top_k(llama_context ctx, nint candidates, int k, int min_keep = 1);
         public static unsafe void llama_sample_top_k(llama_context ctx, llama_token_data_array candidates, int k, int min_keep = 1)
         {
             using var handle = candidates.data.Pin();
-            var _candidates = new _llama_token_data_array { data = new(handle.Pointer), size = candidates.size, sorted = candidates.sorted };
-            _llama_sample_top_k(ctx, new(&_candidates), k, min_keep);
+            var _candidates = new _llama_token_data_array { data = (nint)(handle.Pointer), size = candidates.size, sorted = candidates.sorted };
+            _llama_sample_top_k(ctx, (nint)(&_candidates), k, min_keep);
         }
 
         [DllImport(LibName, EntryPoint = "llama_sample_top_p")] private static extern void _llama_sample_top_p(llama_context ctx, nint candidates, float p, int min_keep = 1);
         public static unsafe void llama_sample_top_p(llama_context ctx, llama_token_data_array candidates, float p, int min_keep = 1)
         {
             using var handle = candidates.data.Pin();
-            var _candidates = new _llama_token_data_array { data = new(handle.Pointer), size = candidates.size, sorted = candidates.sorted };
-            _llama_sample_top_p(ctx, new(&_candidates), p, min_keep);
+            var _candidates = new _llama_token_data_array { data = (nint)(handle.Pointer), size = candidates.size, sorted = candidates.sorted };
+            _llama_sample_top_p(ctx, (nint)(&_candidates), p, min_keep);
         }
 
         [DllImport(LibName, EntryPoint = "llama_sample_tail_free")] private static extern void _llama_sample_tail_free(llama_context ctx, nint candidates, float z, int min_keep = 1);
         public static unsafe void llama_sample_tail_free(llama_context ctx, llama_token_data_array candidates, float z, int min_keep = 1)
         {
             using var handle = candidates.data.Pin();
-            var _candidates = new _llama_token_data_array { data = new(handle.Pointer), size = candidates.size, sorted = candidates.sorted };
-            _llama_sample_tail_free(ctx, new(&_candidates), z, min_keep);
+            var _candidates = new _llama_token_data_array { data = (nint)(handle.Pointer), size = candidates.size, sorted = candidates.sorted };
+            _llama_sample_tail_free(ctx, (nint)(&_candidates), z, min_keep);
         }
 
         [DllImport(LibName, EntryPoint = "llama_sample_typical")] private static extern void _llama_sample_typical(llama_context ctx, nint candidates, float p, int min_keep = 1);
         public static unsafe void llama_sample_typical(llama_context ctx, llama_token_data_array candidates, float p, int min_keep = 1)
         {
             using var handle = candidates.data.Pin();
-            var _candidates = new _llama_token_data_array { data = new(handle.Pointer), size = candidates.size, sorted = candidates.sorted };
-            _llama_sample_typical(ctx, new(&_candidates), p, min_keep);
+            var _candidates = new _llama_token_data_array { data = (nint)(handle.Pointer), size = candidates.size, sorted = candidates.sorted };
+            _llama_sample_typical(ctx, (nint)(&_candidates), p, min_keep);
         }
 
         [DllImport(LibName, EntryPoint = "llama_sample_temperature")] private static extern void _llama_sample_temperature(llama_context ctx, nint candidates, float temp);
         public static unsafe void llama_sample_temperature(llama_context ctx, llama_token_data_array candidates, float temp)
         {
             using var handle = candidates.data.Pin();
-            var _candidates = new _llama_token_data_array { data = new(handle.Pointer), size = candidates.size, sorted = candidates.sorted };
-            _llama_sample_temperature(ctx, new(&_candidates), temp);
+            var _candidates = new _llama_token_data_array { data = (nint)(handle.Pointer), size = candidates.size, sorted = candidates.sorted };
+            _llama_sample_temperature(ctx, (nint)(&_candidates), temp);
         }
 
         [DllImport(LibName, EntryPoint = "llama_sample_grammar")] private static extern void _llama_sample_grammar(llama_context ctx, nint candidates, llama_grammar grammar);
         private static unsafe void llama_sample_grammar(llama_context ctx, llama_token_data_array candidates, llama_grammar grammar)
         {
             using var handle = candidates.data.Pin();
-            var _candidates = new _llama_token_data_array { data = new(handle.Pointer), size = candidates.size, sorted = candidates.sorted };
-            _llama_sample_grammar(ctx, new(&_candidates), grammar);
+            var _candidates = new _llama_token_data_array { data = (nint)(handle.Pointer), size = candidates.size, sorted = candidates.sorted };
+            _llama_sample_grammar(ctx, (nint)(&_candidates), grammar);
         }
 
         [DllImport(LibName, EntryPoint = "llama_sample_token_mirostat")]
@@ -393,8 +394,8 @@ namespace LlamaCppLib
         public static unsafe llama_token llama_sample_token_mirostat(llama_context ctx, llama_token_data_array candidates, float tau, float eta, int m, ref float mu)
         {
             using var handle = candidates.data.Pin();
-            var _candidates = new _llama_token_data_array { data = new(handle.Pointer), size = candidates.size, sorted = candidates.sorted };
-            return _llama_sample_token_mirostat(ctx, new(&_candidates), tau, eta, m, ref mu);
+            var _candidates = new _llama_token_data_array { data = (nint)(handle.Pointer), size = candidates.size, sorted = candidates.sorted };
+            return _llama_sample_token_mirostat(ctx, (nint)(&_candidates), tau, eta, m, ref mu);
         }
 
         [DllImport(LibName, EntryPoint = "llama_sample_token_mirostat_v2")]
@@ -402,24 +403,24 @@ namespace LlamaCppLib
         public static unsafe llama_token llama_sample_token_mirostat_v2(llama_context ctx, llama_token_data_array candidates, float tau, float eta, ref float mu)
         {
             using var handle = candidates.data.Pin();
-            var _candidates = new _llama_token_data_array { data = new(handle.Pointer), size = candidates.size, sorted = candidates.sorted };
-            return _llama_sample_token_mirostat_v2(ctx, new(&_candidates), tau, eta, ref mu);
+            var _candidates = new _llama_token_data_array { data = (nint)(handle.Pointer), size = candidates.size, sorted = candidates.sorted };
+            return _llama_sample_token_mirostat_v2(ctx, (nint)(&_candidates), tau, eta, ref mu);
         }
 
         [DllImport(LibName, EntryPoint = "llama_sample_token_greedy")] private static extern llama_token _llama_sample_token_greedy(llama_context ctx, nint candidates);
         public static unsafe llama_token llama_sample_token_greedy(llama_context ctx, llama_token_data_array candidates)
         {
             using var handle = candidates.data.Pin();
-            var _candidates = new _llama_token_data_array { data = new(handle.Pointer), size = candidates.size, sorted = candidates.sorted };
-            return _llama_sample_token_greedy(ctx, new(&_candidates));
+            var _candidates = new _llama_token_data_array { data = (nint)(handle.Pointer), size = candidates.size, sorted = candidates.sorted };
+            return _llama_sample_token_greedy(ctx, (nint)(&_candidates));
         }
 
         [DllImport(LibName, EntryPoint = "llama_sample_token")] private static extern llama_token _llama_sample_token(llama_context ctx, nint candidates);
         public static unsafe llama_token llama_sample_token(llama_context ctx, llama_token_data_array candidates)
         {
             using var handle = candidates.data.Pin();
-            var _candidates = new _llama_token_data_array { data = new(handle.Pointer), size = candidates.size, sorted = candidates.sorted };
-            return _llama_sample_token(ctx, new(&_candidates));
+            var _candidates = new _llama_token_data_array { data = (nint)(handle.Pointer), size = candidates.size, sorted = candidates.sorted };
+            return _llama_sample_token(ctx, (nint)(&_candidates));
         }
 
         [DllImport(LibName)] public static extern void llama_grammar_accept_token(llama_context ctx, llama_grammar grammar, llama_token token);

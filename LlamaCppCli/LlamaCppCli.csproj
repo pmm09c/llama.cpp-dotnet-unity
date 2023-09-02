@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
-		<TargetFramework>net7.0</TargetFramework>
+		<TargetFramework>netstandard2.1</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<BaseOutputPath>..</BaseOutputPath>
@@ -14,6 +14,10 @@
 	<ItemGroup>
 		<ProjectReference Include="..\BertCppLib\BertCppLib.csproj" />
 		<ProjectReference Include="..\LlamaCppLib\LlamaCppLib.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="System.Net.Http.Json" Version="8.0.0-preview.7.23375.6" />
 	</ItemGroup>
 
 </Project>
