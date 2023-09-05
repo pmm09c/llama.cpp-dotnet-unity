@@ -156,9 +156,9 @@ namespace LlamaCppLib
         }
 
 #if WINDOWS
-        private const string LibName = $"{nameof(LlamaCppLib)}/llama";
+        private const string LibName = $"llama";
 #elif LINUX || MACOS
-        private const string LibName = $"{nameof(LlamaCppLib)}/libllama";
+        private const string LibName = $"libllama";
 #endif
 
         [DllImport(LibName)] public static extern llama_context_params llama_context_default_params();
